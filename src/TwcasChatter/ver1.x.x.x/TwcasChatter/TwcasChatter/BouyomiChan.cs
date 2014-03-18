@@ -164,6 +164,11 @@ namespace MyUtilLib
         /// </summary>
         public void ClearText()
         {
+            if (soundThread == null || !soundThread.IsAlive)
+            {
+                return;
+            }
+
             this.queueLock.WaitOne();
             this.serifQueue.Clear();
             this.queueLock.Set();
@@ -171,10 +176,10 @@ namespace MyUtilLib
             {
                 bouyomiChanClient.ClearTalkTasks();
             }
-            catch (System.Runtime.Remoting.RemotingException exception)
+            //catch (System.Runtime.Remoting.RemotingException exception)
+            catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                //MyUtil.PRINT(exception.Message);
             }
             
             this.clearQueueFlag = true;
@@ -188,6 +193,11 @@ namespace MyUtilLib
         /// <returns></returns>
         public bool Talk(string text)
         {
+            if (soundThread == null || !soundThread.IsAlive)
+            {
+                return false;
+            }
+
             this.queueLock.WaitOne();
             System.Diagnostics.Debug.WriteLine("BouyomiChan::Talk:" + text);
             this.serifQueue.Enqueue(new TalkInfo(text));
@@ -258,7 +268,8 @@ namespace MyUtilLib
                             bouyomiChanClient.ClearTalkTasks();
                         }
                     }
-                    catch (System.Runtime.Remoting.RemotingException exception)
+                    //catch (System.Runtime.Remoting.RemotingException exception)
+                    catch (Exception exception)
                     {
                         //MyUtil.PRINT(exception.Message);
                         System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
@@ -286,6 +297,11 @@ namespace MyUtilLib
         /// <param name="text">テキスト</param>
         private void talkText(string text)
         {
+            if (soundThread == null || !soundThread.IsAlive)
+            {
+                return;
+            }
+
             int tone = -1;
             int speed = -1;
             VoiceType voiceType = VoiceType.Default;
@@ -311,7 +327,8 @@ namespace MyUtilLib
                 }
                  */
             }
-            catch (System.Runtime.Remoting.RemotingException exception)
+            //catch (System.Runtime.Remoting.RemotingException exception)
+            catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
             }

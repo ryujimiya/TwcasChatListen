@@ -35,15 +35,16 @@
             this.txtBoxChannelName = new System.Windows.Forms.TextBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
-            this.WebBrowser = new System.Windows.Forms.WebBrowser();
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
             this.StatusTimer = new System.Windows.Forms.Timer(this.components);
+            this.pictBoxScreenThumb = new System.Windows.Forms.PictureBox();
             this.TopPanel.SuspendLayout();
-            this.MainPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictBoxScreenThumb)).BeginInit();
             this.SuspendLayout();
             // 
             // TopPanel
             // 
+            this.TopPanel.Controls.Add(this.pictBoxScreenThumb);
             this.TopPanel.Controls.Add(this.btnWeb);
             this.TopPanel.Controls.Add(this.txtBoxChannelName);
             this.TopPanel.Controls.Add(this.btnOpen);
@@ -57,7 +58,7 @@
             // 
             this.btnWeb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnWeb.Image = global::TwcasChatter.Properties.Resources.twitcasting;
-            this.btnWeb.Location = new System.Drawing.Point(421, 10);
+            this.btnWeb.Location = new System.Drawing.Point(12, 8);
             this.btnWeb.Name = "btnWeb";
             this.btnWeb.Size = new System.Drawing.Size(35, 35);
             this.btnWeb.TabIndex = 2;
@@ -67,7 +68,7 @@
             // txtBoxChannelName
             // 
             this.txtBoxChannelName.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.txtBoxChannelName.Location = new System.Drawing.Point(54, 10);
+            this.txtBoxChannelName.Location = new System.Drawing.Point(103, 16);
             this.txtBoxChannelName.Name = "txtBoxChannelName";
             this.txtBoxChannelName.Size = new System.Drawing.Size(304, 23);
             this.txtBoxChannelName.TabIndex = 1;
@@ -78,7 +79,7 @@
             // 
             this.btnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOpen.Image = global::TwcasChatter.Properties.Resources.更新;
-            this.btnOpen.Location = new System.Drawing.Point(3, 6);
+            this.btnOpen.Location = new System.Drawing.Point(53, 8);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(35, 35);
             this.btnOpen.TabIndex = 0;
@@ -88,24 +89,11 @@
             // MainPanel
             // 
             this.MainPanel.BackColor = System.Drawing.Color.DimGray;
-            this.MainPanel.Controls.Add(this.WebBrowser);
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPanel.Location = new System.Drawing.Point(0, 55);
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(468, 232);
             this.MainPanel.TabIndex = 1;
-            // 
-            // WebBrowser
-            // 
-            this.WebBrowser.Location = new System.Drawing.Point(290, 6);
-            this.WebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.WebBrowser.Name = "WebBrowser";
-            this.WebBrowser.ScriptErrorsSuppressed = true;
-            this.WebBrowser.Size = new System.Drawing.Size(157, 93);
-            this.WebBrowser.TabIndex = 0;
-            this.WebBrowser.Url = new System.Uri("", System.UriKind.Relative);
-            this.WebBrowser.Visible = false;
-            this.WebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.WebBrowser_DocumentCompleted);
             // 
             // MainTimer
             // 
@@ -114,6 +102,15 @@
             // StatusTimer
             // 
             this.StatusTimer.Tick += new System.EventHandler(this.StatusTimer_Tick);
+            // 
+            // pictBoxScreenThumb
+            // 
+            this.pictBoxScreenThumb.Location = new System.Drawing.Point(419, 5);
+            this.pictBoxScreenThumb.Name = "pictBoxScreenThumb";
+            this.pictBoxScreenThumb.Size = new System.Drawing.Size(44, 44);
+            this.pictBoxScreenThumb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictBoxScreenThumb.TabIndex = 3;
+            this.pictBoxScreenThumb.TabStop = false;
             // 
             // MainFrm
             // 
@@ -132,7 +129,7 @@
             this.Load += new System.EventHandler(this.MainFrm_Load);
             this.TopPanel.ResumeLayout(false);
             this.TopPanel.PerformLayout();
-            this.MainPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictBoxScreenThumb)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -144,9 +141,9 @@
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Timer MainTimer;
-        private System.Windows.Forms.WebBrowser WebBrowser;
         private System.Windows.Forms.Timer StatusTimer;
         private System.Windows.Forms.Button btnWeb;
+        private System.Windows.Forms.PictureBox pictBoxScreenThumb;
     }
 }
 
