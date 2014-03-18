@@ -224,6 +224,7 @@ namespace TwcasChatter
                 userPictBox.ImageLocation = "";
                 userPictBox.Location = new System.Drawing.Point(10, 5 + distanceY * i);
                 userPictBox.Size = new System.Drawing.Size(40, 40);
+                userPictBox.SizeMode = PictureBoxSizeMode.Zoom; // 拡縮
 
                 // ユーザーラベル
                 Label userLabel = new Label();
@@ -498,8 +499,6 @@ namespace TwcasChatter
             IList<CommentStruct> workCommentList = null;
             if (LastBcCmntId == 0)
             {
-                // 直近のコメント数を取得する
-                //getLastBcCmntCnt();
                 // コメント一覧を取得する
                 workCommentList = getBcCmntListAll();
                 if (workCommentList.Count == 0)
@@ -656,55 +655,6 @@ namespace TwcasChatter
             return true;
         }
 
-        /*
-        /// <summary>
-        /// 直近のコメント数を取得する
-        /// </summary>
-        private void getLastBcCmntCnt()
-        {
-            if (!IsBcMovieValid())
-            {
-                return;
-            }
-
-            // 直近のコメント数を初期化
-            LastBcCmntCnt = 0;
-
-            // 動画情報の取得
-            // http://ja.twitcasting.tv/userajax.php?c=movieinfo&m=動画ID
-            // {"maxchars":86,"comment_update_interval":8000,"cnum":2546,"posttitle":"\u6700\u521d\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u6295\u7a3f\u3057\u307e\u3059","postmessage":"\u30e2\u30a4\uff01\u30d1\u30bd\u30b3\u30f3\u304b\u3089\u30c4\u30a4\u30ad\u30e3\u30b9\u3067\u914d\u4fe1\u4e2d","duration":6316,"movietitle":"\u73fe\u5728\u30e9\u30a4\u30d6\u914d\u4fe1\u4e2d! - <a href=\"\/reokunn_dekora\/movie\/46263929\">\u53e3\u30d1\u30afCAS\u306f\u3044\u304b\u304c\u2047<\/a>"}
-            string url = TwcastUrl + "/userajax.php?c=movieinfo&m=" + MovieId;
-            using (WebClient webClient = new WebClient())
-            {
-                Stream stream = null;
-                try
-                {
-                    stream = webClient.OpenRead(url);
-                }
-                catch (Exception exception)
-                {
-                    // 接続エラー
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                    return;
-                }
-                StreamReader sr = new StreamReader(stream);
-                string recvStr = sr.ReadToEnd();
-                try
-                {
-                    // JSON形式から放送情報応答オブジェクトに変換
-                    BcInfoResponse bcInfoResponse = JsonConvert.DeserializeObject<BcInfoResponse>(recvStr);
-
-                    // 直近のコメント数を格納
-                    LastBcCmntCnt = bcInfoResponse.cnum;
-                }
-                catch (Exception exception)
-                {
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                }
-            }
-        }
-         */
-
         /// <summary>
         /// コメント一覧を取得する
         /// </summary>
@@ -724,45 +674,34 @@ namespace TwcasChatter
             //     ...
             // ]
             string url = TwcastUrl + "/" + ChannelName + "/userajax.php?c=listall&m=" + MovieId + "&k=0&f=0&n=10";
-
-            using (WebClient webClient = new WebClient())
+            string recvStr = doHttpRequest(url);
+            if (recvStr == null)
             {
-                Stream stream = null;
-                try
-                {
-                    stream = webClient.OpenRead(url);
-                }
-                catch (Exception exception)
-                {
-                    // 接続エラー
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                    return workCommentList;
-                }
-                StreamReader sr = new StreamReader(stream);
-                string recvStr = sr.ReadToEnd();
-                try
-                {
-                    // JSON形式からコメント応答オブジェクトに変換
-                    IList<BcCmntResponse> cmnts = JsonConvert.DeserializeObject<List<BcCmntResponse>>(recvStr);
+                // 接続エラー
+                return workCommentList;
+            }
+            try
+            {
+                // JSON形式からコメント応答オブジェクトに変換
+                IList<BcCmntResponse> cmnts = JsonConvert.DeserializeObject<List<BcCmntResponse>>(recvStr);
 
-                    // コメント応答リストからコメントを取り出す
-                    workCommentList = parseBcCmntResponse(cmnts);
+                // コメント応答リストからコメントを取り出す
+                workCommentList = parseBcCmntResponse(cmnts);
 
-                    // 直近の取得開始コメントIDをセットする
-                    if (workCommentList.Count > 0)
-                    {
-                        LastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
-                    }
-                    else
-                    {
-                        LastBcCmntId = 0;
-                    }
-                }
-                catch (Exception exception)
+                // 直近の取得開始コメントIDをセットする
+                if (workCommentList.Count > 0)
                 {
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                    return workCommentList;
+                    LastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
                 }
+                else
+                {
+                    LastBcCmntId = 0;
+                }
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
+                return workCommentList;
             }
             return workCommentList;
         }
@@ -827,6 +766,7 @@ namespace TwcasChatter
                 {
                     cmntStr += subTitleNode.InnerText;
                 }
+                cmntStr = System.Web.HttpUtility.HtmlDecode(cmntStr);
                 // 放送スクリーン画像
                 string screenImgSrc = "";
                 HtmlNode screenImgTag = doc.DocumentNode.SelectSingleNode(@"//img[@class=""commentthumb""]");
@@ -873,53 +813,42 @@ namespace TwcasChatter
             //          ],
             //  cnum:}
             string url = TwcastUrl + "/" + ChannelName + "/userajax.php?c=listupdate&m=" + MovieId + "&n=" + LastBcCmntCnt + "&k=" + LastBcCmntId;
-
-            using (WebClient webClient = new WebClient())
+            string recvStr = doHttpRequest(url);
+            if (recvStr == null)
             {
-                Stream stream = null;
-                try
-                {
-                    stream = webClient.OpenRead(url);
-                }
-                catch (Exception exception)
-                {
-                    // 接続エラー
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                    return workCommentList;
-                }
-                StreamReader sr = new StreamReader(stream);
-                string recvStr = sr.ReadToEnd();
-                if (recvStr == "[]" || recvStr == "{\"edit\":\"\"}")
-                {
-                    // 空の場合
-                    return workCommentList;
-                }
-                try
-                {
-                    // JSON形式からコメント応答オブジェクトに変換
-                    BcCmntUpdateResponse bcCmntUpdateResponse = JsonConvert.DeserializeObject<BcCmntUpdateResponse>(recvStr);
-                    IList<BcCmntResponse> cmnts = bcCmntUpdateResponse.comment;
+                // 接続エラー
+                return workCommentList;
+            }
+            if (recvStr == "[]" || recvStr == "{\"edit\":\"\"}")
+            {
+                // 空の場合
+                return workCommentList;
+            }
+            try
+            {
+                // JSON形式からコメント応答オブジェクトに変換
+                BcCmntUpdateResponse bcCmntUpdateResponse = JsonConvert.DeserializeObject<BcCmntUpdateResponse>(recvStr);
+                IList<BcCmntResponse> cmnts = bcCmntUpdateResponse.comment;
 
-                    // コメント応答リストからコメントを取り出す
-                    workCommentList = parseBcCmntResponse(cmnts);
+                // コメント応答リストからコメントを取り出す
+                workCommentList = parseBcCmntResponse(cmnts);
 
-                    // 直近の取得開始コメントIDをセットする
-                    if (workCommentList.Count > 0)
-                    {
-                        LastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
-                    }
-                    else
-                    {
-                        LastBcCmntId = 0;
-                    }
-                    // 直近のコメント数をセットする
-                    LastBcCmntCnt = bcCmntUpdateResponse.cnum;
-                }
-                catch (Exception exception)
+                // 直近の取得開始コメントIDをセットする
+                if (workCommentList.Count > 0)
                 {
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                    return workCommentList;
+                    LastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
                 }
+                else
+                {
+                    LastBcCmntId = 0;
+                }
+                // 直近のコメント数をセットする
+                LastBcCmntCnt = bcCmntUpdateResponse.cnum;
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
+                return workCommentList;
             }
             return workCommentList;
         }
@@ -967,59 +896,49 @@ namespace TwcasChatter
             }
             // 放送ページから動画ID等を取得する
             string url = BcUrl;
-            using (WebClient webClient = new WebClient())
+            string recvStr = doHttpRequest(url);
+            if (recvStr == null)
             {
-                Stream stream = null;
-                try
-                {
-                    stream = webClient.OpenRead(url);
-                }
-                catch (Exception exception)
-                {
-                    // 接続エラー
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                    return;
-                }
-                StreamReader sr = new StreamReader(stream);
-                string recvStr = sr.ReadToEnd();
-                int maxchars = 0;
-                {
-                    MatchCollection matches = Regex.Matches(recvStr, "var maxchars = ([0-9]+);");
-                    if (matches != null && matches.Count == 1)
-                    {
-                        maxchars = Convert.ToInt32(matches[0].Groups[1].Value);
-                    }
-                }
-                int interval = 0;
-                {
-                    MatchCollection matches = Regex.Matches(recvStr, "var comment_update_interval = ([0-9]+);");
-                    if (matches != null && matches.Count == 1)
-                    {
-                        interval = Convert.ToInt32(matches[0].Groups[1].Value);
-                    }
-                }
-                int cnum = 0;
-                {
-                    MatchCollection matches = Regex.Matches(recvStr, "var movie_cnum = ([0-9]+);");
-                    if (matches != null && matches.Count == 1)
-                    {
-                        cnum = Convert.ToInt32(matches[0].Groups[1].Value);
-                    }
-                }
-                int movieid = 0;
-                {
-                    MatchCollection matches = Regex.Matches(recvStr, "var movieid = \"([0-9]+)\";");
-                    if (matches != null && matches.Count >= 1) // movieidの宣言が2つあるので条件を1以上としている
-                    {
-                        movieid = Convert.ToInt32(matches[0].Groups[1].Value);
-                    }
-                }
-                MovieId = movieid;
-                LastBcCmntId = 0;
-                LastBcCmntCnt = cnum;
-                System.Diagnostics.Debug.WriteLine("LastBcCmntCnt " + LastBcCmntCnt);
-                System.Diagnostics.Debug.WriteLine("MovieId " + MovieId);
+                // 接続エラー
+                return;
             }
+            int maxchars = 0;
+            {
+                MatchCollection matches = Regex.Matches(recvStr, "var maxchars = ([0-9]+);");
+                if (matches != null && matches.Count == 1)
+                {
+                    maxchars = Convert.ToInt32(matches[0].Groups[1].Value);
+                }
+            }
+            int interval = 0;
+            {
+                MatchCollection matches = Regex.Matches(recvStr, "var comment_update_interval = ([0-9]+);");
+                if (matches != null && matches.Count == 1)
+                {
+                    interval = Convert.ToInt32(matches[0].Groups[1].Value);
+                }
+            }
+            int cnum = 0;
+            {
+                MatchCollection matches = Regex.Matches(recvStr, "var movie_cnum = ([0-9]+);");
+                if (matches != null && matches.Count == 1)
+                {
+                    cnum = Convert.ToInt32(matches[0].Groups[1].Value);
+                }
+            }
+            int movieid = 0;
+            {
+                MatchCollection matches = Regex.Matches(recvStr, "var movieid = \"([0-9]+)\";");
+                if (matches != null && matches.Count >= 1) // movieidの宣言が2つあるので条件を1以上としている
+                {
+                    movieid = Convert.ToInt32(matches[0].Groups[1].Value);
+                }
+            }
+            MovieId = movieid;
+            LastBcCmntId = 0;
+            LastBcCmntCnt = cnum;
+            System.Diagnostics.Debug.WriteLine("LastBcCmntCnt " + LastBcCmntCnt);
+            System.Diagnostics.Debug.WriteLine("MovieId " + MovieId);
         }
 
         /// <summary>
@@ -1060,6 +979,43 @@ namespace TwcasChatter
             // http://twitcasting.tv/userajax.php?c=status&u=0424cchi
             //{"error":false,"status":0,"movieid":16337475,"title":"\u3088\u3063\u3061\u30e1\u30f3","duration":911}
             string url = TwcastUrl + "/userajax.php?c=status&u=" + ChannelName;
+            string recvStr = doHttpRequest(url);
+            if (recvStr == null)
+            {
+                // 接続エラー
+                return;
+            }
+            try
+            {
+                // JSON形式から放送ステータス応答オブジェクトに変換
+                BcStatusResponse bcStatusResponse = JsonConvert.DeserializeObject<BcStatusResponse>(recvStr);
+                bool error = bcStatusResponse.error;
+                if (error)
+                {
+                    // 動画ID等の情報がとれない場合がある
+                }
+                else
+                {
+                    BcStatus = bcStatusResponse.status;
+                    MovieId = bcStatusResponse.movieid;
+                    BcTitle = bcStatusResponse.title;
+                    System.Diagnostics.Debug.WriteLine("BcStatus = {0} MovieId = {1} BcTitle = {2}", BcStatus, MovieId, BcTitle);
+                }
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// HTTPリクエストを送信する
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns>null:接続エラー または、recvStr:受信文字列</returns>
+        private static string doHttpRequest(string url)
+        {
+            string recvStr = null;
             using (WebClient webClient = new WebClient())
             {
                 Stream stream = null;
@@ -1071,32 +1027,12 @@ namespace TwcasChatter
                 {
                     // 接続エラー
                     System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                    return;
+                    return recvStr;
                 }
                 StreamReader sr = new StreamReader(stream);
-                string recvStr = sr.ReadToEnd();
-                try
-                {
-                    // JSON形式から放送ステータス応答オブジェクトに変換
-                    BcStatusResponse bcStatusResponse = JsonConvert.DeserializeObject<BcStatusResponse>(recvStr);
-                    bool error = bcStatusResponse.error;
-                    if (error)
-                    {
-                        // 動画ID等の情報がとれない場合がある
-                    }
-                    else
-                    {
-                        BcStatus = bcStatusResponse.status;
-                        MovieId = bcStatusResponse.movieid;
-                        BcTitle = bcStatusResponse.title;
-                        System.Diagnostics.Debug.WriteLine("BcStatus = {0} MovieId = {1} BcTitle = {2}", BcStatus, MovieId, BcTitle);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
-                }
+                recvStr = sr.ReadToEnd();
             }
+            return recvStr;
         }
 
         /// <summary>
