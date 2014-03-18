@@ -990,7 +990,9 @@ namespace TwcasChatter
                 // JSON形式から放送ステータス応答オブジェクトに変換
                 BcStatusResponse bcStatusResponse = JsonConvert.DeserializeObject<BcStatusResponse>(recvStr);
                 bool error = bcStatusResponse.error;
-                if (error)
+                if (error
+                    || bcStatusResponse.movieid < MovieId  // 最新動画ID(放送ページ上の動画ID)より古いものを取得した場合
+                    )
                 {
                     // 動画ID等の情報がとれない場合がある
                 }
