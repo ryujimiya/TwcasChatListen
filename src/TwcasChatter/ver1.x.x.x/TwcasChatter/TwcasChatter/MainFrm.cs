@@ -572,10 +572,10 @@ namespace TwcasChatter
 
                 // コメントのGUIへのセットと棒読みちゃんへの送信
                 // 棒読みちゃんへ送信
-                string sendText = "";
+                string sendText = tagtComment.Text;
                 if (BcTitle != "")
                 {
-                    StringBuilder sendTextSb = new StringBuilder(tagtComment.Text);
+                    StringBuilder sendTextSb = new StringBuilder(sendText);
                     sendTextSb.Replace("(" + BcTitle + ")", "");
                     sendText = sendTextSb.ToString();
                 }
@@ -701,6 +701,7 @@ namespace TwcasChatter
             catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
+                System.Diagnostics.Debug.WriteLine("[Error]getBcCmntListAll: recvStr: " + recvStr);
                 return workCommentList;
             }
             return workCommentList;
@@ -848,6 +849,7 @@ namespace TwcasChatter
             catch (Exception exception)
             {
                 System.Diagnostics.Debug.WriteLine(exception.Message + " " + exception.StackTrace);
+                System.Diagnostics.Debug.WriteLine("[Error]getBcCmntListUpdate: recvStr: " + recvStr);
                 return workCommentList;
             }
             return workCommentList;
@@ -995,6 +997,7 @@ namespace TwcasChatter
                     )
                 {
                     // 動画ID等の情報がとれない場合がある
+                    System.Diagnostics.Debug.WriteLine("skip BcStatus. recvStr: " + recvStr + " current MovieId: " + MovieId);
                 }
                 else
                 {
