@@ -581,44 +581,23 @@ namespace TwcasChatter
                 }
                 BouyomiChan.Talk(sendText);
 
-                // GUIへセット
-                for (int iLabel = CommentTextBoxList.Length - 1; iLabel >= 1; iLabel--)
-                {
-                    // コメントラベル
-                    {
-                        TextBox textBox1 = CommentTextBoxList[iLabel];
-                        TextBox textBox2 = CommentTextBoxList[iLabel - 1];
-                        textBox1.Text = textBox2.Text;
-                        textBox1.Refresh();
-                    }
-                    // ユーザーラベル
-                    {
-                        Label label1 = UserLabelList[iLabel];
-                        Label label2 = UserLabelList[iLabel - 1];
-                        label1.Text = label2.Text;
-                        label1.Refresh();
-                    }
-                    // ユーザーピクチャーボックス
-                    {
-                        PictureBox pictBox1 = UserPictBoxList[iLabel];
-                        PictureBox pictBox2 = UserPictBoxList[iLabel - 1];
-                        pictBox1.ImageLocation = pictBox2.ImageLocation;
-                        pictBox1.Refresh();
-                    }
-
-                }
-                // コメントラベル
-                CommentTextBoxList[0].Text = tagtComment.Text;
-                CommentTextBoxList[0].Refresh();
-                // ユーザーラベル
-                UserLabelList[0].Text = tagtComment.UserName;
-                UserLabelList[0].Refresh();
-                // ユーザーピクチャーボックス
-                UserPictBoxList[0].ImageLocation = tagtComment.UserThumbUrl;
-                UserPictBoxList[0].Refresh();
-
-                // ここでイベントを処理
+                // 音声送信の処理が行われるようにイベント処理する
                 Application.DoEvents();
+            }
+
+            // GUIへセット
+            for (int iLabel = 0, iComment = CommentList.Count - 1; iLabel < CommentTextBoxList.Length && iComment >= 0; iLabel++, iComment--)
+            {
+                CommentStruct tagtComment = CommentList[iComment];
+                // コメントラベル
+                CommentTextBoxList[iLabel].Text = tagtComment.Text;
+                CommentTextBoxList[iLabel].Refresh();
+                // ユーザーラベル
+                UserLabelList[iLabel].Text = tagtComment.UserName;
+                UserLabelList[iLabel].Refresh();
+                // ユーザーピクチャーボックス
+                UserPictBoxList[iLabel].ImageLocation = tagtComment.UserThumbUrl;
+                UserPictBoxList[iLabel].Refresh();
             }
 
             // 放送スクリーン画像の表示
