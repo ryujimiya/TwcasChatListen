@@ -31,19 +31,20 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             this.TopPanel = new System.Windows.Forms.Panel();
+            this.pictBoxScreenThumb = new System.Windows.Forms.PictureBox();
             this.btnWeb = new System.Windows.Forms.Button();
             this.txtBoxChannelName = new System.Windows.Forms.TextBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
             this.StatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.pictBoxScreenThumb = new System.Windows.Forms.PictureBox();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxScreenThumb)).BeginInit();
             this.SuspendLayout();
             // 
             // TopPanel
             // 
+            this.TopPanel.BackColor = System.Drawing.Color.Black;
             this.TopPanel.Controls.Add(this.pictBoxScreenThumb);
             this.TopPanel.Controls.Add(this.btnWeb);
             this.TopPanel.Controls.Add(this.txtBoxChannelName);
@@ -54,9 +55,19 @@
             this.TopPanel.Size = new System.Drawing.Size(468, 55);
             this.TopPanel.TabIndex = 0;
             // 
+            // pictBoxScreenThumb
+            // 
+            this.pictBoxScreenThumb.Location = new System.Drawing.Point(419, 5);
+            this.pictBoxScreenThumb.Name = "pictBoxScreenThumb";
+            this.pictBoxScreenThumb.Size = new System.Drawing.Size(44, 44);
+            this.pictBoxScreenThumb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictBoxScreenThumb.TabIndex = 3;
+            this.pictBoxScreenThumb.TabStop = false;
+            // 
             // btnWeb
             // 
             this.btnWeb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWeb.ForeColor = System.Drawing.SystemColors.ControlText;
             this.btnWeb.Image = global::TwcasChatter.Properties.Resources.twitcasting;
             this.btnWeb.Location = new System.Drawing.Point(12, 8);
             this.btnWeb.Name = "btnWeb";
@@ -78,7 +89,7 @@
             // btnOpen
             // 
             this.btnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOpen.Image = global::TwcasChatter.Properties.Resources.更新;
+            this.btnOpen.Image = global::TwcasChatter.Properties.Resources.更新2;
             this.btnOpen.Location = new System.Drawing.Point(53, 8);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(35, 35);
@@ -88,7 +99,7 @@
             // 
             // MainPanel
             // 
-            this.MainPanel.BackColor = System.Drawing.Color.DimGray;
+            this.MainPanel.BackColor = System.Drawing.Color.WhiteSmoke;
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPanel.Location = new System.Drawing.Point(0, 55);
             this.MainPanel.Name = "MainPanel";
@@ -102,15 +113,6 @@
             // StatusTimer
             // 
             this.StatusTimer.Tick += new System.EventHandler(this.StatusTimer_Tick);
-            // 
-            // pictBoxScreenThumb
-            // 
-            this.pictBoxScreenThumb.Location = new System.Drawing.Point(419, 5);
-            this.pictBoxScreenThumb.Name = "pictBoxScreenThumb";
-            this.pictBoxScreenThumb.Size = new System.Drawing.Size(44, 44);
-            this.pictBoxScreenThumb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictBoxScreenThumb.TabIndex = 3;
-            this.pictBoxScreenThumb.TabStop = false;
             // 
             // MainFrm
             // 

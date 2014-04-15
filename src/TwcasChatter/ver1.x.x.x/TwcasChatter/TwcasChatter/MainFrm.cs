@@ -231,9 +231,9 @@ namespace TwcasChatter
                 this.MainPanel.Controls.Add(userLabel);
                 UserLabelList[i] = userLabel;
                 userLabel.AutoSize = true;
-                userLabel.BackColor = System.Drawing.Color.DimGray;
+                userLabel.BackColor = System.Drawing.Color.WhiteSmoke;
                 userLabel.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-                userLabel.ForeColor = System.Drawing.Color.SpringGreen;
+                userLabel.ForeColor = System.Drawing.Color.DarkBlue;
                 userLabel.Location = new System.Drawing.Point(72, 5 + distanceY * i);
                 userLabel.Size = new System.Drawing.Size(39, 19);
                 userLabel.Text = "";
@@ -242,9 +242,9 @@ namespace TwcasChatter
                 this.MainPanel.Controls.Add(commentTextBox);
                 CommentTextBoxList[i] = commentTextBox;
                 commentTextBox.AutoSize = false;
-                commentTextBox.BackColor = System.Drawing.Color.DimGray;
+                commentTextBox.BackColor = System.Drawing.Color.WhiteSmoke;
                 commentTextBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-                commentTextBox.ForeColor = System.Drawing.Color.White;
+                commentTextBox.ForeColor = System.Drawing.Color.Black;
                 commentTextBox.BorderStyle = BorderStyle.None;
                 commentTextBox.Location = new System.Drawing.Point(72, 24 + distanceY * i);
                 commentTextBox.Size = new System.Drawing.Size(1200, 30);
