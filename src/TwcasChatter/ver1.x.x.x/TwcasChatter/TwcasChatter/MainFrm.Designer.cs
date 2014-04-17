@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             this.TopPanel = new System.Windows.Forms.Panel();
             this.pictBoxScreenThumb = new System.Windows.Forms.PictureBox();
@@ -36,8 +35,6 @@
             this.txtBoxChannelName = new System.Windows.Forms.TextBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
-            this.MainTimer = new System.Windows.Forms.Timer(this.components);
-            this.StatusTimer = new System.Windows.Forms.Timer(this.components);
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxScreenThumb)).BeginInit();
             this.SuspendLayout();
@@ -106,14 +103,6 @@
             this.MainPanel.Size = new System.Drawing.Size(468, 232);
             this.MainPanel.TabIndex = 1;
             // 
-            // MainTimer
-            // 
-            this.MainTimer.Tick += new System.EventHandler(this.MainTimer_Tick);
-            // 
-            // StatusTimer
-            // 
-            this.StatusTimer.Tick += new System.EventHandler(this.StatusTimer_Tick);
-            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -142,8 +131,6 @@
         private System.Windows.Forms.TextBox txtBoxChannelName;
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Panel MainPanel;
-        private System.Windows.Forms.Timer MainTimer;
-        private System.Windows.Forms.Timer StatusTimer;
         private System.Windows.Forms.Button btnWeb;
         private System.Windows.Forms.PictureBox pictBoxScreenThumb;
     }

@@ -32,23 +32,6 @@ namespace MyUtilLib
         public static extern int waveOutSetVolume(IntPtr hwo, uint dwVolume);
 
         //------------------------------------------------------------
-        // ID          : PRINT
-        // DESCRIPTION : 
-        // PARAMETER   : 
-        // RET         :
-        //------------------------------------------------------------
-        public static void PRINT(string str)
-        {
-             System.Diagnostics.Debug.WriteLine(str);
-
-            //const string logPath = "debug.log" ;
-            //using (StreamWriter sw = File.AppendText(logPath))
-            //{
-            //    sw.WriteLine(str) ;
-            //}
-        }
-
-        //------------------------------------------------------------
         // ID          : GetDelegateForLibFunction
         // DESCRIPTION : DLLの関数をデリゲートとして取得
         // PARAMETER   : IntPtr libHandle [IN]
@@ -131,7 +114,6 @@ namespace MyUtilLib
         {
             return Microsoft.VisualBasic.Strings.Trim(str);
         }
-
 
         //------------------------------------------------------------
         // ID          : SafetyOperate
