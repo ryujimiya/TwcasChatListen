@@ -15,16 +15,18 @@ namespace TwcasChatter
     /// <summary>
     /// コメント受信イベントハンドラデリゲート
     /// </summary>
-    /// <param name="commentStr"></param>
+    /// <param name="sender">チャットクライアント</param>
+    /// <param name="comment">受信したコメント構造体</param>
     public delegate void OnCommentReceiveEachDelegate(TwcasChatClient sender, CommentStruct comment);
     /// <summary>
     /// コメント受信完了イベントハンドラデリゲート
+    /// <param name="sender">チャットクライアント</param>
     /// </summary>
     public delegate void OnCommentReceiveDoneDelegate(TwcasChatClient sender);
     /// <summary>
     /// 動画IDが変更されたときのイベントハンドラデリゲート
     /// </summary>
-    /// <param name="sender"></param>
+    /// <param name="sender">チャットクライアント</param>
     public delegate void OnMovieIdChangedDelegate(TwcasChatClient sender);
 
     /// <summary>
@@ -35,7 +37,7 @@ namespace TwcasChatter
         /// <summary>
         /// コメントID
         /// </summary>
-        public int Id;
+        public uint Id;
         /// <summary>
         /// コメントテキスト
         /// </summary>
@@ -58,6 +60,9 @@ namespace TwcasChatter
         public string ScreenThumbUrl;
     }
 
+    /// <summary>
+    /// Twitcasting.TVのチャットクライアント（機能はコメント受信のみ)
+    /// </summary>
     public class TwcasChatClient : IDisposable
     {
         ///////////////////////////////////////////////////////////////////////
@@ -95,7 +100,7 @@ namespace TwcasChatter
         /// </summary>
         private class BcCmntResponse
         {
-            public int id { get; set; }
+            public uint id { get; set; }
             public string @class { get; set; }
             public string html { get; set; }
             public string date { get; set; }
@@ -150,7 +155,7 @@ namespace TwcasChatter
         /// <summary>
         /// 放送URL
         /// </summary>
-        public string BcUrl { get; set; }
+        public string BcUrl { get; private set; }
         /// <summary>
         /// コメントリスト
         /// </summary>
@@ -206,7 +211,7 @@ namespace TwcasChatter
         /// <summary>
         /// 直近のコメントId
         /// </summary>
-        private int LastBcCmntId = 0;
+        private uint LastBcCmntId = 0;
         
         /// <summary>
         /// コンストラクタ
@@ -277,9 +282,9 @@ namespace TwcasChatter
         }
 
         /// <summary>
-        /// ページを開く
+        /// コメント受信処理を開始する
         /// </summary>
-        public bool DoOpen()
+        public bool Start()
         {
             // 放送URLを取得
             BcUrl = makeBcUrl(this.ChannelName);
@@ -331,10 +336,11 @@ namespace TwcasChatter
             return TwcastUrl + "/" + channelName;
         }
 
-        /// <summary>
-        /// タイマーが停止するまで待つ
+        /// <summary
+        /// コメント受信処理を停止する>
+        ///   タイマーが停止するまで待つ
         /// </summary>
-        public void StopTimer()
+        public void Stop()
         {
             // タイマーを停止する
             MainTimer.Enabled = false;
@@ -550,7 +556,7 @@ namespace TwcasChatter
             //  日付順
             foreach (BcCmntResponse bcCmntResponse in cmnts)
             {
-                int id = bcCmntResponse.id;
+                uint id = bcCmntResponse.id;
                 string htmlStr = bcCmntResponse.html;
                 string dateStr = bcCmntResponse.date;
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();

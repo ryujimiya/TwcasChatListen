@@ -190,7 +190,7 @@ namespace TwcasChatter
         {
 
             // タイマーが停止するまで待つ
-            ChatClient.StopTimer();
+            ChatClient.Stop();
 
             // 初期化
             // チャンネルの初期化
@@ -211,7 +211,7 @@ namespace TwcasChatter
             setTitle();
 
             // チャットをオープンする
-            bool ret = ChatClient.DoOpen();
+            bool ret = ChatClient.Start();
             if (!ret)
             {
                 // チャンネルの初期化
