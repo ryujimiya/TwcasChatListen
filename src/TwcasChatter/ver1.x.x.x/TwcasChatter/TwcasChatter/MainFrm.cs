@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace TwcasChatter
 {
@@ -380,6 +381,26 @@ namespace TwcasChatter
 
             // ブラウザを開く
             System.Diagnostics.Process.Start(url);
+        }
+
+        /// <summary>
+        /// 「設定」ボタンがクリックされた
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            // 一旦TopMostを解除する
+            this.TopMost = false;
+
+            // 設定ダイアログを表示する
+            var settingsForm = new SettingsForm();
+            settingsForm.Owner = this;
+            DialogResult result = settingsForm.ShowDialog();
+
+            // 設定を反映する
+            string topMost = ConfigurationSettings.AppSettings["TopMost"];
+            this.TopMost = (topMost == "1");
         }
     }
 }

@@ -35,6 +35,7 @@
             this.txtBoxChannelName = new System.Windows.Forms.TextBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
+            this.SettingsButton = new System.Windows.Forms.Button();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictBoxScreenThumb)).BeginInit();
             this.SuspendLayout();
@@ -42,6 +43,7 @@
             // TopPanel
             // 
             this.TopPanel.BackColor = System.Drawing.Color.Black;
+            this.TopPanel.Controls.Add(this.SettingsButton);
             this.TopPanel.Controls.Add(this.pictBoxScreenThumb);
             this.TopPanel.Controls.Add(this.btnWeb);
             this.TopPanel.Controls.Add(this.txtBoxChannelName);
@@ -54,7 +56,7 @@
             // 
             // pictBoxScreenThumb
             // 
-            this.pictBoxScreenThumb.Location = new System.Drawing.Point(419, 5);
+            this.pictBoxScreenThumb.Location = new System.Drawing.Point(367, 5);
             this.pictBoxScreenThumb.Name = "pictBoxScreenThumb";
             this.pictBoxScreenThumb.Size = new System.Drawing.Size(44, 44);
             this.pictBoxScreenThumb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -78,7 +80,7 @@
             this.txtBoxChannelName.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.txtBoxChannelName.Location = new System.Drawing.Point(103, 16);
             this.txtBoxChannelName.Name = "txtBoxChannelName";
-            this.txtBoxChannelName.Size = new System.Drawing.Size(304, 23);
+            this.txtBoxChannelName.Size = new System.Drawing.Size(258, 23);
             this.txtBoxChannelName.TabIndex = 1;
             this.txtBoxChannelName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBoxChannelName_KeyDown);
             this.txtBoxChannelName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtBoxChannelName_KeyUp);
@@ -103,6 +105,16 @@
             this.MainPanel.Size = new System.Drawing.Size(468, 232);
             this.MainPanel.TabIndex = 1;
             // 
+            // SettingsButton
+            // 
+            this.SettingsButton.Location = new System.Drawing.Point(417, 10);
+            this.SettingsButton.Name = "SettingsButton";
+            this.SettingsButton.Size = new System.Drawing.Size(48, 31);
+            this.SettingsButton.TabIndex = 4;
+            this.SettingsButton.Text = "設定";
+            this.SettingsButton.UseVisualStyleBackColor = true;
+            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
+            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -114,7 +126,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainFrm";
             this.Text = "TwcasChatter";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFrm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainFrm_FormClosed);
             this.Load += new System.EventHandler(this.MainFrm_Load);
@@ -133,6 +144,7 @@
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Button btnWeb;
         private System.Windows.Forms.PictureBox pictBoxScreenThumb;
+        private System.Windows.Forms.Button SettingsButton;
     }
 }
 
