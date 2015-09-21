@@ -1,5 +1,6 @@
 ﻿TwcasChatter
 =============
+This application provides the viewer and the text-to-speech for the chat comments of Twitcasting TV.The text-to-speech is supported with the help of the external application "BouyomiChan" 
 
 **Latest Release**  
 version1.0.0.11  
