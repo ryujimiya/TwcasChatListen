@@ -38,7 +38,7 @@ namespace TwcasChatter
         /// コメントID
         /// </summary>
         //public uint Id;
-        public long Id;
+        public ulong Id;
         /// <summary>
         /// コメントテキスト
         /// </summary>
@@ -102,7 +102,7 @@ namespace TwcasChatter
         private class BcCmntResponse
         {
             //public uint id { get; set; }
-            public long id { get; set; }
+            public ulong id { get; set; }
             public string @class { get; set; }
             public string html { get; set; }
             public string date { get; set; }
@@ -214,7 +214,7 @@ namespace TwcasChatter
         /// 直近のコメントId
         /// </summary>
         //private uint LastBcCmntId = 0;
-        private long LastBcCmntId = 0;
+        private ulong LastBcCmntId = 0;
         
         /// <summary>
         /// コンストラクタ
@@ -560,7 +560,7 @@ namespace TwcasChatter
             foreach (BcCmntResponse bcCmntResponse in cmnts)
             {
                 //uint id = bcCmntResponse.id;
-                long id = bcCmntResponse.id;
+                ulong id = bcCmntResponse.id;
                 string htmlStr = bcCmntResponse.html;
                 string dateStr = bcCmntResponse.date;
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
