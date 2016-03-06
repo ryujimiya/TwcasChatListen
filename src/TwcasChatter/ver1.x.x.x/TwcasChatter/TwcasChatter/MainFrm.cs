@@ -316,6 +316,9 @@ namespace TwcasChatter
 
             // 音声送信の処理が行われるようにイベント処理する
             Application.DoEvents();
+
+            // ログを記録
+            WriteLog(comment.UserName, comment.Text);
         }
 
         /// <summary>
@@ -401,6 +404,22 @@ namespace TwcasChatter
             // 設定を反映する
             string topMost = ConfigurationSettings.AppSettings["TopMost"];
             this.TopMost = (topMost == "1");
+        }
+
+        /// <summary>
+        /// コメントログを記録する
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="commentText"></param>
+        private void WriteLog(string userName, string commentText)
+        {
+            string logText = userName + "\t" + commentText;
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(
+                @"comment.txt",
+                true, // append : true
+                System.Text.Encoding.GetEncoding("UTF-8"));
+            sw.WriteLine(logText);
+            sw.Close();
         }
     }
 }
