@@ -510,6 +510,7 @@ namespace TwcasChatter
             // ]
             string url = TwcastUrl + "/" + ChannelName + "/userajax.php?c=listall&m=" + MovieId + "&k=0&f=0&n=10";
             string recvStr = doHttpRequest(url);
+            //System.Diagnostics.Debug.WriteLine("recvStr:[" + recvStr + "]");
             if (recvStr == null)
             {
                 // 接続エラー
@@ -563,6 +564,8 @@ namespace TwcasChatter
                 ulong id = bcCmntResponse.id;
                 string htmlStr = bcCmntResponse.html;
                 string dateStr = bcCmntResponse.date;
+                System.Diagnostics.Debug.WriteLine("htmlStr:" + htmlStr);
+
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(htmlStr);
                 // 最初のimgタグ：プロフィール画像
@@ -580,6 +583,7 @@ namespace TwcasChatter
                     System.Diagnostics.Debug.WriteLine("userSpanTag is null. id: [" + id + "] html: [" + htmlStr + "]");
                     continue;
                 }
+                profImgSrc = "https:" + profImgSrc;
                 string userName = userSpanTag.InnerText;
                 // コメントノード
                 HtmlNode cmntTdTag = doc.DocumentNode.SelectSingleNode(@"//td[@class=""comment""]");
@@ -588,6 +592,7 @@ namespace TwcasChatter
                     System.Diagnostics.Debug.WriteLine("cmntTdTag is null. id: [" + id + "] html: [" + htmlStr + "]");
                     continue;
                 }
+                /*
                 // テキストノードだけ抽出(spanノードは除外する)
                 string cmntStr = "";
                 foreach (HtmlNode workChild in cmntTdTag.ChildNodes)
@@ -597,6 +602,17 @@ namespace TwcasChatter
                         cmntStr += workChild.InnerText;
                     }
                 }
+                */
+                // コメントテキストノード
+                string cmntStr = "";
+                HtmlNode cmntTxtTag = doc.DocumentNode.SelectSingleNode(@"//span[@class=""comment-text""]");
+                if (cmntTxtTag == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("cmntTxtTag is null. id: [" + id + "] html: [" + htmlStr + "]");
+                    continue;
+                }
+                cmntStr += cmntTxtTag.InnerText;
+
                 //cmntStr = cmntStr.Replace("<br>", System.Environment.NewLine);
                 HtmlNode subTitleNode = cmntTdTag.SelectSingleNode(@"//span[@class=""smallsubtitle""]");
                 if (subTitleNode != null)
