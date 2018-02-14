@@ -132,7 +132,7 @@ namespace TwcasChatter
         /// <summary>
         /// TwitCastingTVのURL
         /// </summary>
-        private const string TwcastUrl = "http://twitcasting.tv";
+        private const string TwcastUrl = "https://twitcasting.tv";
         /// <summary>
         /// 最大保持コメント数
         /// </summary>
@@ -577,7 +577,13 @@ namespace TwcasChatter
                 HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(htmlStr);
                 // 最初のimgタグ：プロフィール画像
-                HtmlNode profImgTag = doc.DocumentNode.SelectSingleNode(@"//img[1]");
+                HtmlNode profileImgTdTag = doc.DocumentNode.SelectSingleNode(@"//td[@class=""img""]");
+                if (profileImgTdTag == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("profileImgTdTag is null. id: [" + id + "] html: [" + htmlStr + "]");
+                    continue;
+                }
+                HtmlNode profImgTag = profileImgTdTag.SelectSingleNode(@"//img[1]");
                 if (profImgTag == null)
                 {
                     System.Diagnostics.Debug.WriteLine("profImgTag is null. id: [" + id + "] html: [" + htmlStr + "]");
@@ -591,7 +597,10 @@ namespace TwcasChatter
                     System.Diagnostics.Debug.WriteLine("userSpanTag is null. id: [" + id + "] html: [" + htmlStr + "]");
                     continue;
                 }
-                profImgSrc = "https:" + profImgSrc;
+                if (profImgSrc.IndexOf("https") != 0)
+                {
+                    profImgSrc = "https:" + profImgSrc;
+                }
                 string userName = userSpanTag.InnerText;
                 // コメントノード
                 HtmlNode cmntTdTag = doc.DocumentNode.SelectSingleNode(@"//td[@class=""comment""]");
@@ -617,13 +626,6 @@ namespace TwcasChatter
                     cmntStr += subTitleNode.InnerText;
                 }
                 cmntStr = System.Web.HttpUtility.HtmlDecode(cmntStr);
-                // 放送スクリーン画像
-                string screenImgSrc = "";
-                HtmlNode screenImgTag = doc.DocumentNode.SelectSingleNode(@"//img[@class=""commentthumb""]");
-                if (screenImgTag != null)
-                {
-                    screenImgSrc = screenImgTag.GetAttributeValue("src", "");
-                }
 
                 CommentStruct workComment = new CommentStruct();
                 workComment.Id = id;

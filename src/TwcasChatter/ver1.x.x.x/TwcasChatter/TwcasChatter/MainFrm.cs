@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Configuration;
+using System.IO; // Stream
+using System.Net; // WebClient
 
 namespace TwcasChatter
 {
@@ -338,8 +340,19 @@ namespace TwcasChatter
                 UserLabelList[iLabel].Text = tagtComment.UserName;
                 //UserLabelList[iLabel].Refresh();
                 // ユーザーピクチャーボックス
-                UserPictBoxList[iLabel].ImageLocation = "";
-                UserPictBoxList[iLabel].Refresh();
+                /*
+                WebClient wc = new WebClient();
+                byte[] bytes = wc.DownloadData(tagtComment.UserThumbUrl);
+                MemoryStream ms = new MemoryStream(bytes);
+                System.Drawing.Image img = System.Drawing.Image.FromStream(ms);
+                PictureBox userPictBox = UserPictBoxList[iLabel];
+                if (userPictBox.Image != null)
+                {
+                    userPictBox.Image.Dispose();
+                    userPictBox.Image = null;
+                }
+                userPictBox.Image = img;
+                */
                 UserPictBoxList[iLabel].ImageLocation = tagtComment.UserThumbUrl;
                 //UserPictBoxList[iLabel].Refresh();
             }
