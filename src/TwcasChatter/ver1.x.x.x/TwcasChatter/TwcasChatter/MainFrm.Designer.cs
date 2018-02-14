@@ -30,21 +30,18 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             this.TopPanel = new System.Windows.Forms.Panel();
-            this.pictBoxScreenThumb = new System.Windows.Forms.PictureBox();
+            this.SettingsButton = new System.Windows.Forms.Button();
             this.btnWeb = new System.Windows.Forms.Button();
             this.txtBoxChannelName = new System.Windows.Forms.TextBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
-            this.SettingsButton = new System.Windows.Forms.Button();
             this.TopPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictBoxScreenThumb)).BeginInit();
             this.SuspendLayout();
             // 
             // TopPanel
             // 
             this.TopPanel.BackColor = System.Drawing.Color.Black;
             this.TopPanel.Controls.Add(this.SettingsButton);
-            this.TopPanel.Controls.Add(this.pictBoxScreenThumb);
             this.TopPanel.Controls.Add(this.btnWeb);
             this.TopPanel.Controls.Add(this.txtBoxChannelName);
             this.TopPanel.Controls.Add(this.btnOpen);
@@ -54,14 +51,15 @@
             this.TopPanel.Size = new System.Drawing.Size(468, 55);
             this.TopPanel.TabIndex = 0;
             // 
-            // pictBoxScreenThumb
+            // SettingsButton
             // 
-            this.pictBoxScreenThumb.Location = new System.Drawing.Point(367, 5);
-            this.pictBoxScreenThumb.Name = "pictBoxScreenThumb";
-            this.pictBoxScreenThumb.Size = new System.Drawing.Size(44, 44);
-            this.pictBoxScreenThumb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictBoxScreenThumb.TabIndex = 3;
-            this.pictBoxScreenThumb.TabStop = false;
+            this.SettingsButton.Location = new System.Drawing.Point(417, 10);
+            this.SettingsButton.Name = "SettingsButton";
+            this.SettingsButton.Size = new System.Drawing.Size(48, 31);
+            this.SettingsButton.TabIndex = 4;
+            this.SettingsButton.Text = "設定";
+            this.SettingsButton.UseVisualStyleBackColor = true;
+            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
             // btnWeb
             // 
@@ -105,16 +103,6 @@
             this.MainPanel.Size = new System.Drawing.Size(468, 232);
             this.MainPanel.TabIndex = 1;
             // 
-            // SettingsButton
-            // 
-            this.SettingsButton.Location = new System.Drawing.Point(417, 10);
-            this.SettingsButton.Name = "SettingsButton";
-            this.SettingsButton.Size = new System.Drawing.Size(48, 31);
-            this.SettingsButton.TabIndex = 4;
-            this.SettingsButton.Text = "設定";
-            this.SettingsButton.UseVisualStyleBackColor = true;
-            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
-            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -131,7 +119,6 @@
             this.Load += new System.EventHandler(this.MainFrm_Load);
             this.TopPanel.ResumeLayout(false);
             this.TopPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictBoxScreenThumb)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -143,7 +130,6 @@
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Button btnWeb;
-        private System.Windows.Forms.PictureBox pictBoxScreenThumb;
         private System.Windows.Forms.Button SettingsButton;
     }
 }

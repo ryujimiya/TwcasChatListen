@@ -56,9 +56,9 @@ namespace TwcasChatter
         /// </summary>
         public string UserThumbUrl;
         /// <summary>
-        /// 放送スクリーンサムネールURL
+        /// 棒読みちゃんの音を出す？
         /// </summary>
-        public string ScreenThumbUrl;
+        public bool IsBouyomiOn;
     }
 
     /// <summary>
@@ -533,6 +533,14 @@ namespace TwcasChatter
                 {
                     LastBcCmntId = 0;
                 }
+
+                // 一覧取得の場合は棒読みちゃんに送信しないようにする
+                for (int i = 0; i < workCommentList.Count; i++)
+                {
+                    CommentStruct tmpComment = workCommentList[i];
+                    tmpComment.IsBouyomiOn = false;
+                    workCommentList[i] = tmpComment;
+                }
             }
             catch (Exception exception)
             {
@@ -592,20 +600,9 @@ namespace TwcasChatter
                     System.Diagnostics.Debug.WriteLine("cmntTdTag is null. id: [" + id + "] html: [" + htmlStr + "]");
                     continue;
                 }
-                /*
-                // テキストノードだけ抽出(spanノードは除外する)
-                string cmntStr = "";
-                foreach (HtmlNode workChild in cmntTdTag.ChildNodes)
-                {
-                    if (workChild.GetType() == typeof(HtmlTextNode))
-                    {
-                        cmntStr += workChild.InnerText;
-                    }
-                }
-                */
                 // コメントテキストノード
                 string cmntStr = "";
-                HtmlNode cmntTxtTag = doc.DocumentNode.SelectSingleNode(@"//span[@class=""comment-text""]");
+                HtmlNode cmntTxtTag = cmntTdTag.SelectSingleNode(@"//span[@class=""comment-text""]");
                 if (cmntTxtTag == null)
                 {
                     System.Diagnostics.Debug.WriteLine("cmntTxtTag is null. id: [" + id + "] html: [" + htmlStr + "]");
@@ -634,13 +631,12 @@ namespace TwcasChatter
                 workComment.UserName = userName;
                 workComment.TimeStr = dateStr;
                 workComment.Text = cmntStr;
-                workComment.ScreenThumbUrl = screenImgSrc;
+                workComment.IsBouyomiOn = true; // 初期値
                 //System.Diagnostics.Debug.WriteLine("Id " + workComment.Id);
                 //System.Diagnostics.Debug.WriteLine("UserThumbUrl " + workComment.UserThumbUrl);
                 //System.Diagnostics.Debug.WriteLine("UserName " + workComment.UserName);
                 //System.Diagnostics.Debug.WriteLine("TimeStr " + workComment.TimeStr);
                 //System.Diagnostics.Debug.WriteLine("Text " + workComment.Text);
-                //System.Diagnostics.Debug.WriteLine("ScreenThumbUrl " + workComment.ScreenThumbUrl);
                 workCommentList.Add(workComment);
             }
             return workCommentList;

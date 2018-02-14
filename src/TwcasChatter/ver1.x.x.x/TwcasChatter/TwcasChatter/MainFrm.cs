@@ -178,10 +178,6 @@ namespace TwcasChatter
 
             // タイトルを設定
             setTitle();
-
-            // 放送スクリーン画像クリア
-            pictBoxScreenThumb.ImageLocation = "";
-            pictBoxScreenThumb.Refresh();
         }
 
         /// <summary>
@@ -302,17 +298,20 @@ namespace TwcasChatter
         /// <param name="comment"></param>
         private void ChatClient_OnCommentReceiveEach(TwcasChatClient sender, CommentStruct comment)
         {
-            // コメントのGUIへのセットと棒読みちゃんへの送信
-            // 棒読みちゃんへ送信
-            string sendText = comment.Text;
-            string bcTitle = ChatClient.BcTitle;
-            if (bcTitle != "")
+            if (comment.IsBouyomiOn)
             {
-                StringBuilder sendTextSb = new StringBuilder(sendText);
-                sendTextSb.Replace("(" + bcTitle + ")", "");
-                sendText = sendTextSb.ToString();
+                // コメントのGUIへのセットと棒読みちゃんへの送信
+                // 棒読みちゃんへ送信
+                string sendText = comment.Text;
+                string bcTitle = ChatClient.BcTitle;
+                if (bcTitle != "")
+                {
+                    StringBuilder sendTextSb = new StringBuilder(sendText);
+                    sendTextSb.Replace("(" + bcTitle + ")", "");
+                    sendText = sendTextSb.ToString();
+                }
+                BouyomiChan.Talk(sendText);
             }
-            BouyomiChan.Talk(sendText);
 
             // 音声送信の処理が行われるようにイベント処理する
             Application.DoEvents();
@@ -341,22 +340,6 @@ namespace TwcasChatter
                 // ユーザーピクチャーボックス
                 UserPictBoxList[iLabel].ImageLocation = tagtComment.UserThumbUrl;
                 UserPictBoxList[iLabel].Refresh();
-            }
-
-            // 放送スクリーン画像の表示
-            if (commentList.Count > 0)
-            {
-                CommentStruct lastCmnt = commentList[commentList.Count - 1];
-                if (pictBoxScreenThumb.ImageLocation != lastCmnt.ScreenThumbUrl)
-                {
-                    pictBoxScreenThumb.ImageLocation = lastCmnt.ScreenThumbUrl;
-                    pictBoxScreenThumb.Refresh();
-                }
-            }
-            else
-            {
-                pictBoxScreenThumb.ImageLocation = "";
-                pictBoxScreenThumb.Refresh();
             }
         }
 
