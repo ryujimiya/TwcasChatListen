@@ -597,7 +597,7 @@ namespace TwcasChatter
                     System.Diagnostics.Debug.WriteLine("userSpanTag is null. id: [" + id + "] html: [" + htmlStr + "]");
                     continue;
                 }
-                if (profImgSrc.IndexOf("https") != 0)
+                if (profImgSrc.IndexOf("//") == 0)
                 {
                     profImgSrc = "https:" + profImgSrc;
                 }
