@@ -333,14 +333,15 @@ namespace TwcasChatter
                 CommentStruct tagtComment = commentList[iComment];
                 // コメントラベル
                 CommentTextBoxList[iLabel].Text = tagtComment.Text;
-                CommentTextBoxList[iLabel].Refresh();
+                //CommentTextBoxList[iLabel].Refresh();
                 // ユーザーラベル
                 UserLabelList[iLabel].Text = tagtComment.UserName;
-                UserLabelList[iLabel].Refresh();
+                //UserLabelList[iLabel].Refresh();
                 // ユーザーピクチャーボックス
-                UserPictBoxList[iLabel].ImageLocation = ""; // 画像が表示されなくなる対策
-                UserPictBoxList[iLabel].ImageLocation = tagtComment.UserThumbUrl;
+                UserPictBoxList[iLabel].ImageLocation = "";
                 UserPictBoxList[iLabel].Refresh();
+                UserPictBoxList[iLabel].ImageLocation = tagtComment.UserThumbUrl;
+                //UserPictBoxList[iLabel].Refresh();
             }
         }
 
