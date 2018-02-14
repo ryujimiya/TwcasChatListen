@@ -338,6 +338,7 @@ namespace TwcasChatter
                 UserLabelList[iLabel].Text = tagtComment.UserName;
                 UserLabelList[iLabel].Refresh();
                 // ユーザーピクチャーボックス
+                UserPictBoxList[iLabel].ImageLocation = ""; // 画像が表示されなくなる対策
                 UserPictBoxList[iLabel].ImageLocation = tagtComment.UserThumbUrl;
                 UserPictBoxList[iLabel].Refresh();
             }
