@@ -32,7 +32,7 @@ namespace TwcasChatListen
         private MyUtilLib.BouyomiChan bouyomiChan = new MyUtilLib.BouyomiChan();
 
         /// <summary>
-        /// ふわっちクライアント
+        /// ツイキャスクライアント
         /// </summary>
         private TwcasChatClient twcasChatClient;
 
