@@ -5,10 +5,9 @@
 **Latest Release**  
 version1.0.0.15  
 　[インストール](https://github.com/ryujimiya/TwcasChatListen/blob/master/publish/)  
-  
 　Note: 1.0.0.15からアプリケーションの名前がTwcasChatterからTwcasChatListenになりました。  
   
-![TwcasChatter](http://stat.ameba.jp/user_images/20130731/23/ryujimiya/dc/d9/p/t02200124_0600033812629845238.png)  
+![TwcasChatListen](https://stat.ameba.jp/user_images/20180501/13/ryujimiya/dd/70/j/o0470031914181576264.jpg?caw=800)  
 
 **How to install**  
 　"TwcasChatListen.x.x.x.zip" ("x.x.x.x"はバージョン)をダウンロードし解凍し  
