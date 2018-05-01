@@ -224,7 +224,7 @@ namespace TwcasChatListen
             mainDTimer.Tick += new EventHandler(mainDTimer_Tick);
 
             statusDTimer = new DispatcherTimer(DispatcherPriority.Normal);
-            statusDTimer.Interval = new TimeSpan(0, 0, 5);
+            statusDTimer.Interval = new TimeSpan(0, 0, 30);
             statusDTimer.Tick += new EventHandler(statusDTimer_Tick);
             InitChannelInfo();
         }
