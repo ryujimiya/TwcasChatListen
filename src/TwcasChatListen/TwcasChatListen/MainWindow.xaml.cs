@@ -112,15 +112,18 @@ namespace TwcasChatListen
             writeLog(uiCommentData.UserName, uiCommentData.CommentStr);
 
             // 棒読みちゃんへ送信
-            string sendText = comment.Text;
-            string bcTitle = twcasChatClient.BcTitle;
-            if (bcTitle != "")
+            if (comment.IsBouyomiOn)
             {
-                StringBuilder sendTextSb = new StringBuilder(sendText);
-                sendTextSb.Replace("(" + bcTitle + ")", "");
-                sendText = sendTextSb.ToString();
+                string sendText = comment.Text;
+                string bcTitle = twcasChatClient.BcTitle;
+                if (bcTitle != "")
+                {
+                    StringBuilder sendTextSb = new StringBuilder(sendText);
+                    sendTextSb.Replace("(" + bcTitle + ")", "");
+                    sendText = sendTextSb.ToString();
+                }
+                bouyomiChan.Talk(sendText);
             }
-            bouyomiChan.Talk(sendText);
         }
 
         /// <summary>

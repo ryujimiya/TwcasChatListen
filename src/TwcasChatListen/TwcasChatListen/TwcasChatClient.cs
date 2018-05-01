@@ -273,11 +273,11 @@ namespace TwcasChatListen
                 return false;
             }
 
-            // ステータスタイマーを開始
-            statusDTimer.Start();
-
             // メインタイマー処理
             doMainTimerProc();
+
+            // ステータスタイマーを開始
+            statusDTimer.Start();
             // メインタイマーを開始
             mainDTimer.Start();
 
