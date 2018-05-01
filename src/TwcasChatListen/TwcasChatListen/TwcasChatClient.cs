@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using System.IO; // Stream
+using System.Threading.Tasks;
+using System.Windows.Threading; // DispatcherTimer
 using System.Net; // WebClient
 using System.Text.RegularExpressions; // Regex
-using System.Threading;
+using System.IO; // StreamReader
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using MyUtilLib;
 
 namespace TwcasChatListen
-{
-    /// <summary>
-    /// コメント受信イベントハンドラデリゲート
-    /// </summary>
-    /// <param name="sender">チャットクライアント</param>
-    /// <param name="comment">受信したコメント構造体</param>
+{    /// <summary>
+     /// コメント受信イベントハンドラデリゲート
+     /// </summary>
+     /// <param name="sender">チャットクライアント</param>
+     /// <param name="comment">受信したコメント構造体</param>
     public delegate void OnCommentReceiveEachDelegate(TwcasChatClient sender, CommentStruct comment);
     /// <summary>
     /// コメント受信完了イベントハンドラデリゲート
@@ -64,7 +64,7 @@ namespace TwcasChatListen
     /// <summary>
     /// Twitcasting.TVのチャットクライアント（機能はコメント受信のみ)
     /// </summary>
-    public class TwcasChatClient : IDisposable
+    public class TwcasChatClient
     {
         ///////////////////////////////////////////////////////////////////////
         // 型
@@ -147,10 +147,6 @@ namespace TwcasChatListen
         // フィールド
         ///////////////////////////////////////////////////////////////////////
         /// <summary>
-        /// 破棄された?
-        /// </summary>
-        private bool disposed = false;
-        /// <summary>
         /// チャンネル名
         /// </summary>
         public string ChannelName { get; set; }
@@ -189,84 +185,48 @@ namespace TwcasChatListen
         /// 動画IDが変更された時のイベントハンドラ
         /// </summary>
         public event OnMovieIdChangedDelegate OnMovieIdChanged = null;
-
         /// <summary>
         /// コメント取得タイマー
         /// </summary>
-        private System.Windows.Forms.Timer MainTimer = null;
+        private DispatcherTimer mainDTimer;
         /// <summary>
         /// ステータス取得タイマー
         /// </summary>
-        private System.Windows.Forms.Timer StatusTimer = null;
+        private DispatcherTimer statusDTimer;
         /// <summary>
         /// タイマー処理実行中？
         /// </summary>
-        private bool IsTimerProcRunning = false;
+        private bool isTimerProcess = false;
         /// <summary>
         /// オフライン後、タイマー処理をした回数
         /// </summary>
-        private int PendingCntForOffLine = 0;
+        private int pendingCntForOffLine = 0;
         /// <summary>
         /// 直近のコメント数
         /// </summary>
-        private int LastBcCmntCnt = 0;
+        private int lastBcCmntCnt = 0;
         /// <summary>
         /// 直近のコメントId
         /// </summary>
-        //private uint LastBcCmntId = 0;
-        private ulong LastBcCmntId = 0;
-        
+        private ulong lastBcCmntId = 0;
+
+
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
         public TwcasChatClient()
         {
-            // 初期化
             CommentList = new List<CommentStruct>();
-            MainTimer = new System.Windows.Forms.Timer();
-            StatusTimer = new System.Windows.Forms.Timer();
 
+            mainDTimer = new DispatcherTimer(DispatcherPriority.Normal);
+            mainDTimer.Interval = new TimeSpan(0, 0, 5);
+            mainDTimer.Tick += new EventHandler(mainDTimer_Tick);
+
+            statusDTimer = new DispatcherTimer(DispatcherPriority.Normal);
+            statusDTimer.Interval = new TimeSpan(0, 0, 5);
+            statusDTimer.Tick += new EventHandler(statusDTimer_Tick);
             InitChannelInfo();
-
-            // タイマーイベントハンドラの設定
-            MainTimer.Tick += MainTimer_Tick;
-            StatusTimer.Tick += StatusTimer_Tick;
-            // タイマー間隔を設定する
-            MainTimer.Interval = 5 * 1000;
-            MainTimer.Enabled = false;
-            StatusTimer.Interval = 30 * 1000;
-            StatusTimer.Enabled = false;
-        }
-
-        /// <summary>
-        /// ファイナライザ
-        /// </summary>
-        ~TwcasChatClient()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
-        /// 終了
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// 使用中のリソースをすべてクリーンアップします。
-        /// </summary>
-        /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                MainTimer.Enabled = false;
-
-                disposed = true;
-            }
         }
 
         /// <summary>
@@ -278,9 +238,9 @@ namespace TwcasChatListen
             BcUrl = "";
             BcStatus = 0;
             MovieId = 0;
-            LastBcCmntCnt = 0;
-            LastBcCmntId = 0;
-            PendingCntForOffLine = 0;
+            lastBcCmntCnt = 0;
+            lastBcCmntId = 0;
+            pendingCntForOffLine = 0;
             CommentList.Clear();
         }
 
@@ -304,25 +264,24 @@ namespace TwcasChatListen
             // 動画IDが取得できているかチェック
             if (MovieId == 0)
             {
-                new Thread(new ThreadStart(delegate()
-                {
-                    MessageBox.Show("番組が見つかりませんでした");
-                })).Start();
+                //new Thread(new ThreadStart(delegate()
+                //{
+                //    MessageBox.Show("番組が見つかりませんでした");
+                //})).Start();
                 // チャンネルの初期化
                 InitChannelInfo();
                 return false;
             }
 
             // ステータスタイマーを開始
-            StatusTimer.Enabled = true;
+            statusDTimer.Start();
 
             // メインタイマー処理
             doMainTimerProc();
             // メインタイマーを開始
-            MainTimer.Enabled = true;
+            mainDTimer.Start();
 
             return true;
-
         }
 
         /// <summary>
@@ -339,23 +298,15 @@ namespace TwcasChatListen
             return TwcastUrl + "/" + channelName;
         }
 
-        /// <summary
+        /// <summary>
         /// コメント受信処理を停止する>
         ///   タイマーが停止するまで待つ
         /// </summary>
         public void Stop()
         {
             // タイマーを停止する
-            MainTimer.Enabled = false;
-            StatusTimer.Enabled = false;
-
-            // タイマー処理が終了するまで待つ
-            System.Diagnostics.Debug.WriteLine("timer waiting...");
-            while (IsTimerProcRunning)
-            {
-                Application.DoEvents();
-            }
-            System.Diagnostics.Debug.WriteLine("timer waiting... done");
+            mainDTimer.Stop();
+            statusDTimer.Stop();
         }
 
         /// <summary>
@@ -363,22 +314,50 @@ namespace TwcasChatListen
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainTimer_Tick(object sender, EventArgs e)
+        private void mainDTimer_Tick(object sender, EventArgs e)
         {
-            if (!IsTimerProcRunning)
+            if (isTimerProcess)
             {
-                IsTimerProcRunning = true;
-                if (BcStatus == 0
-                    || (BcStatus != 0 && (MaxPendingCntForOffLine == -1 || (PendingCntForOffLine < MaxPendingCntForOffLine)))
-                    )
+                return;
+            }
+
+            isTimerProcess = true;
+            if (BcStatus == 0
+                || (BcStatus != 0 && (MaxPendingCntForOffLine == -1 || (pendingCntForOffLine < MaxPendingCntForOffLine)))
+                )
+            {
+                doMainTimerProc();
+                if (BcStatus != 0)
                 {
-                    doMainTimerProc();
-                    if (BcStatus != 0)
-                    {
-                        PendingCntForOffLine++;
-                    }
+                    pendingCntForOffLine++;
                 }
-                IsTimerProcRunning = false;
+            }
+            isTimerProcess = false;
+        }
+
+        /// <summary>
+        /// 放送ステータスを取得するタイマーイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void statusDTimer_Tick(object sender, EventArgs e)
+        {
+            // 前のステータスを退避
+            int prevBcStatus = BcStatus;
+            int prevMovieId = MovieId;
+
+            // 放送ステータスを取得
+            getBcStatus();
+
+            // 動画IDが変更されたらページを再読み込みする
+            if (prevMovieId != 0  // 初回は除外
+                && prevMovieId != MovieId)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("movieId changed:{0} -> {1}", prevMovieId, MovieId));
+                if (OnMovieIdChanged != null)
+                {
+                    OnMovieIdChanged(this);
+                }
             }
         }
 
@@ -388,7 +367,7 @@ namespace TwcasChatListen
         private void doMainTimerProc()
         {
             IList<CommentStruct> workCommentList = null;
-            if (LastBcCmntId == 0)
+            if (lastBcCmntId == 0)
             {
                 // コメント一覧を取得する
                 workCommentList = getBcCmntListAll();
@@ -527,11 +506,11 @@ namespace TwcasChatListen
                 // 直近の取得開始コメントIDをセットする
                 if (workCommentList.Count > 0)
                 {
-                    LastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
+                    lastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
                 }
                 else
                 {
-                    LastBcCmntId = 0;
+                    lastBcCmntId = 0;
                 }
 
                 // 一覧取得の場合は棒読みちゃんに送信しないようにする
@@ -663,7 +642,7 @@ namespace TwcasChatListen
             //     ...
             //          ],
             //  cnum:}
-            string url = TwcastUrl + "/" + ChannelName + "/userajax.php?c=listupdate&m=" + MovieId + "&n=" + LastBcCmntCnt + "&k=" + LastBcCmntId;
+            string url = TwcastUrl + "/" + ChannelName + "/userajax.php?c=listupdate&m=" + MovieId + "&n=" + lastBcCmntCnt + "&k=" + lastBcCmntId;
             string recvStr = doHttpRequest(url);
             if (recvStr == null)
             {
@@ -687,14 +666,14 @@ namespace TwcasChatListen
                 // 直近の取得開始コメントIDをセットする
                 if (workCommentList.Count > 0)
                 {
-                    LastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
+                    lastBcCmntId = workCommentList[workCommentList.Count - 1].Id;
                 }
                 else
                 {
-                    LastBcCmntId = 0;
+                    lastBcCmntId = 0;
                 }
                 // 直近のコメント数をセットする
-                LastBcCmntCnt = bcCmntUpdateResponse.cnum;
+                lastBcCmntCnt = bcCmntUpdateResponse.cnum;
             }
             catch (Exception exception)
             {
@@ -755,37 +734,10 @@ namespace TwcasChatListen
                 }
             }
             MovieId = movieid;
-            LastBcCmntId = 0;
-            LastBcCmntCnt = cnum;
-            System.Diagnostics.Debug.WriteLine("LastBcCmntCnt " + LastBcCmntCnt);
+            lastBcCmntId = 0;
+            lastBcCmntCnt = cnum;
+            System.Diagnostics.Debug.WriteLine("lastBcCmntCnt " + lastBcCmntCnt);
             System.Diagnostics.Debug.WriteLine("MovieId " + MovieId);
-        }
-
-        /// <summary>
-        /// 放送ステータスを取得する
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void StatusTimer_Tick(object sender, EventArgs e)
-        {
-            // 前のステータスを退避
-            int prevBcStatus = BcStatus;
-            int prevMovieId = MovieId;
-
-            // 放送ステータスを取得
-            getBcStatus();
-
-            // 動画IDが変更されたらページを再読み込みする
-            if (prevMovieId != 0  // 初回は除外
-                && prevMovieId != MovieId)
-            {
-                System.Diagnostics.Debug.WriteLine(string.Format("movieId changed:{0} -> {1}", prevMovieId, MovieId));
-                if (OnMovieIdChanged != null)
-                {
-                    OnMovieIdChanged(this);
-                }
-            }
-
         }
 
         /// <summary>

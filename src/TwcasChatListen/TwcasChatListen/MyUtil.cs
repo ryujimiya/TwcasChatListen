@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
-using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.InteropServices; //DllImport
-using System.Windows.Forms; //Control
 using System.Collections; //Hashtable
 using System.Text.RegularExpressions; // Regex
 using System.Drawing; // Color
@@ -31,17 +29,16 @@ namespace MyUtilLib
         [DllImport("winmm.dll")]
         public static extern int waveOutSetVolume(IntPtr hwo, uint dwVolume);
 
-        //------------------------------------------------------------
-        // ID          : GetDelegateForLibFunction
-        // DESCRIPTION : DLLの関数をデリゲートとして取得
-        // PARAMETER   : IntPtr libHandle [IN]
-        //               string functionName [IN]
-        //               Type type [IN] デリゲートの型(typeof()で指定)
-        // RET         : Delegate
-        //------------------------------------------------------------
+        /// <summary>
+        /// DLLの関数をデリゲートとして取得
+        /// </summary>
+        /// <param name="libHandle"></param>
+        /// <param name="functionName"></param>
+        /// <param name="type">デリゲートの型(typeof()で指定)</param>
+        /// <returns>Delegate</returns>
         public static Delegate GetDelegateForLibFunction(IntPtr libHandle, string functionName, Type type)
         {
-            IntPtr funcPtr ;
+            IntPtr funcPtr;
             funcPtr = MyUtil.GetProcAddress(libHandle, functionName);
             if (funcPtr == IntPtr.Zero)
             {
@@ -50,12 +47,10 @@ namespace MyUtilLib
             return Marshal.GetDelegateForFunctionPointer(funcPtr, type);
         }
 
-        //------------------------------------------------------------
-        // ID          : WaveOutSetVolume
-        // DESCRIPTION : 
-        // PARAMETER   : 
-        // RET         :
-        //------------------------------------------------------------
+        /// <summary>
+        /// 音量設定
+        /// </summary>
+        /// <param name="volume"></param>
         public static void WaveOutSetVolume(int volume)
         {
             int num = 0x28f * volume; //0が音量　100が最大？
@@ -63,12 +58,10 @@ namespace MyUtilLib
             waveOutSetVolume(IntPtr.Zero, dwVolume2);
         }
 
-        //------------------------------------------------------------
-        // ID          : WaveOutGetVolume
-        // DESCRIPTION : 音量取得
-        // PARAMETER   : 
-        // RET         :
-        //------------------------------------------------------------
+        /// <summary>
+        /// 音量取得
+        /// </summary>
+        /// <returns></returns>
         public static int WaveOutGetVolume()
         {
             int volume;
@@ -79,48 +72,44 @@ namespace MyUtilLib
             return volume;
         }
 
-        //------------------------------------------------------------
-        // ID          : KakakanaToHiragana
-        // DESCRIPTION : カタカナ→ひらがな変換
-        // PARAMETER   : 
-        // RET         :
-        //------------------------------------------------------------
-        /*参照設定に「Microsoft.VisualBasic」追加*/
+        /// <summary>
+        /// カタカナ→ひらがな変換
+        /// 参照設定に「Microsoft.VisualBasic」追加
+        /// </summary>
+        /// <param name="katakana"></param>
+        /// <returns></returns>
         public static string KakakanaToHiragana(string katakana)
         {
             return Microsoft.VisualBasic.Strings.StrConv(katakana, Microsoft.VisualBasic.VbStrConv.Hiragana, 0);
         }
 
-        //------------------------------------------------------------
-        // ID          : HiraganaToKakakana
-        // DESCRIPTION : ひらがな→カタカナ変換
-        // PARAMETER   : 
-        // RET         :
-        //------------------------------------------------------------
-        /*参照設定に「Microsoft.VisualBasic」追加*/
+        /// <summary>
+        /// ひらがな→カタカナ変換
+        /// 参照設定に「Microsoft.VisualBasic」追加
+        /// </summary>
+        /// <param name="hiragana"></param>
+        /// <returns></returns>
         public static string HiraganaToKakakana(string hiragana)
         {
             return Microsoft.VisualBasic.Strings.StrConv(hiragana, Microsoft.VisualBasic.VbStrConv.Katakana, 0);
         }
 
-        //------------------------------------------------------------
-        // ID          : Trim
-        // DESCRIPTION : 
-        // PARAMETER   : 
-        // RET         :
-        //------------------------------------------------------------
         /*参照設定に「Microsoft.VisualBasic」追加*/
+        /// <summary>
+        /// Trim
+        /// 参照設定に「Microsoft.VisualBasic」追加
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static string Trim(string str)
         {
             return Microsoft.VisualBasic.Strings.Trim(str);
         }
 
-        //------------------------------------------------------------
-        // ID          : SafetyOperate
-        // DESCRIPTION : 
-        // PARAMETER   : 
-        // RET         :
-        //------------------------------------------------------------
+        /// <summary>
+        /// SafetyOperate
+        /// </summary>
+        /*
         public static object SafetyOperate(Control context, Delegate method)
         {
             return MyUtil.SafelyOperate(context, method, null);
@@ -150,17 +139,16 @@ namespace MyUtilLib
                 return method.DynamicInvoke(args);
             }
         }
+        */
 
-        //------------------------------------------------------------
-        // ID          : GetCmdLineInfo
-        // DESCRIPTION : コマンドライン引数解析  
-        //                /key0 /Key1 Value1 /Key2 Value2 Value3
-        //                  key0の値はnull
-        //                  key1の値はValue1
-        //
-        // PARAMETER   :  string keyPrefix [IN] (初期値: '/')
-        // RET         :
-        //------------------------------------------------------------
+        /// <summary>
+        /// コマンドライン引数解析
+        /// /key0 /Key1 Value1 /Key2 Value2 Value3
+        ///   key0の値はnull
+        ///   key1の値はValue1
+        /// </summary>
+        /// <param name="keyPrefix">(初期値: '/')</param>
+        /// <returns></returns>
         public class CmdLineInfo
         {
             public string[] Args = null;                   // コマンドライン引数配列 System.Environment.GetCommandLineArgs()を格納
@@ -223,12 +211,11 @@ namespace MyUtilLib
             return cmdLineInfo;
         }
 
-        //------------------------------------------------------------
-        // ID          : GetUrlInText
-        // DESCRIPTION : URLを抽出する
-        // PARAMETER   :  string text  [IN]
-        // RET         : string url
-        //------------------------------------------------------------
+        /// <summary>
+        /// URLを抽出する
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string GetUrlInText(string text)
         {
             string url = "";
@@ -241,12 +228,11 @@ namespace MyUtilLib
             return url;
         }
 
-        //------------------------------------------------------------
-        // ID          : GetUrlListInText
-        // DESCRIPTION : 複数のURLを抽出する
-        // PARAMETER   :  string text  [IN]
-        // RET         : string url
-        //------------------------------------------------------------
+        /// <summary>
+        /// 複数のURLを抽出する
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string[] GetUrlListInText(string text)
         {
             string[] urls = null;
@@ -341,40 +327,32 @@ namespace MyUtilLib
         /// バージョン名を取得
         /// </summary>
         /// <returns></returns>
-        public static string getAppVersion()
+        public static string GetFileVersion()
         {
             string versionStr = "";
-            //（AssemblyInformationalVersion属性）
-            versionStr = Application.ProductVersion;
-            /*
-            //Click Once [発行]のバージョン
-            if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
-            {
-                Version publishVersion = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                versionStr = publishVersion.Major.ToString() + "." + publishVersion.Minor.ToString() + "." + publishVersion.Build.ToString() + "." + publishVersion.Revision.ToString();
-            }
-             */
+            System.Diagnostics.FileVersionInfo versionInfo =
+                System.Diagnostics.FileVersionInfo.GetVersionInfo(
+                System.Reflection.Assembly.GetExecutingAssembly().Location);
+            versionStr = versionInfo.FileVersion;
             return versionStr;
         }
 
         /// <summary>
-        /// 製品名（AssemblyProduct属性）を取得
+        /// UNIX時間の取得
         /// </summary>
+        /// <param name="targetTime"></param>
         /// <returns></returns>
-        public static string getAppProductName()
+        public static long GetUnixTime(DateTime targetTime)
         {
-            return Application.ProductName;
-        }
+            // UTC時間に変換
+            targetTime = targetTime.ToUniversalTime();
 
-        /// <summary>
-        /// 会社名（AssemblyCompany属性）を取得
-        /// </summary>
-        /// <returns></returns>
-        public static string getAppCompanyName()
-        {
-            return Application.CompanyName;
-        }
+            // UNIXエポックからの経過時間を取得
+            DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            TimeSpan elapsedTime = targetTime - UNIX_EPOCH;
 
+            // 経過秒数に変換
+            return (long)elapsedTime.TotalSeconds;
+        }
     }
-
 }
