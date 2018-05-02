@@ -256,8 +256,13 @@ namespace TwcasChatListen
                 return false;
             }
 
+            MovieId = 0;
+            lastBcCmntId = 0;
+            lastBcCmntCnt = 0;
+            /*
             // 放送ページから動画ID等を取得する
             getBcInfoFromBcPage();
+            */
             // 放送ステータス取得
             getBcStatus();
 
@@ -684,6 +689,7 @@ namespace TwcasChatListen
             return workCommentList;
         }
 
+        /*
         /// <summary>
         /// 放送ページから動画ID等を取得する
         /// </summary>
@@ -733,12 +739,14 @@ namespace TwcasChatListen
                     movieid = Convert.ToInt32(matches[0].Groups[1].Value);
                 }
             }
+
             MovieId = movieid;
             lastBcCmntId = 0;
             lastBcCmntCnt = cnum;
             System.Diagnostics.Debug.WriteLine("lastBcCmntCnt " + lastBcCmntCnt);
             System.Diagnostics.Debug.WriteLine("MovieId " + MovieId);
         }
+        */
 
         /// <summary>
         /// 放送ステータスを取得する
